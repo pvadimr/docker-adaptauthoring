@@ -1,109 +1,37 @@
-README.md
-=================
+# docker-adaptauthoring
 
-Authoring SCORM-compatible training using the [Adapt Authoring](https://github.com/adaptlearning/adapt_authoring) tool at http://localhost:5000.
+Authoring SCORM-compatible training using the [Adapt Authoring](https://github.com/adaptlearning/adapt_authoring) tool.
 
-Login credentials are set from a .env file (See _Config_ section).
+## How to use this image
 
-Getting Started - docker-compose
----------------------------------
+Because Adapt requires a database to run, the easiest way to get started is to use `docker-compose` to set up Adapt and MongoDB automatically.
 
-### Config
+Fetch the example `docker-compose.yml`:
 
-Add an `.env` file with the following:
+    wget https://github.com/3-w-c/docker-adaptauthoring/blob/master/docker-compose.yml
 
-```
-ADMIN_EMAIL=admin
-ADMIN_PASSWORD=password
-```
+Edit the variables under `services.app.environment`, then push the button!
 
-This is read during "setup."
+    docker-compose up
 
-### Setup
+## Environment variables
 
-Do this once:
+You can configure Adapt's initial set-up using these variables:
 
-```
-docker-compose up -d
-```
+- `DOMAIN` - hostname for the Adapt service
+- `PORT` (default `5000`) - TCP port for the Adapt service
+- `DB_HOST` - MongoDB server hostname
+- `DB_USER` - MongoDB username
+- `DB_NAME` - MongoDB database name
+- `SESSION_SECRET` - HTTP session secret key (set to something random)
+- `ADMIN_EMAIL` - email address for the default superuser account
+- `ADMIN_PASSWORD` - password for the default superuser account
+- `FROM_EMAIL` - `From:` email address for notifications
 
-docker-compose -f docker-compose.setup.yml run --rm setup
+## Docker secrets
 
-```
+As well as environment variables, you can also load `SESSION_SECRET` and
+`ADMIN_PASSWORD` from files, which is helpful if want to keep secret data in
+[Docker swarm mode secrets](https://docs.docker.com/engine/swarm/secrets).
 
-Subsequent runnings: `docker-compose up -d`.
-
-### Clean Up
-
-#### To remove containers
-
-```
-docker-compose down
-```
-
-#### To remove data (courses)
-
-This will delete your hard work.
-
-```
-docker volume rm dockeradaptauthoring_adaptdb
-docker volume rm dockeradaptauthoring_adaptdata
-```
-
-### Backup
-
-Create local archives of both the adapt_authoring folder and database:
-
-```
-docker run -it -w /backup -v dockeradaptauthoring_adaptdb:/adaptdb -v $(pwd)/backup:/backup dockeradaptauthoring_authoring bash -c "tar -czvf adaptdata_`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz /adapt_authoring && tar -czvf adaptdb_`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz /adaptdb"
-```
-
-Getting Started - Using `docker run ...`
---------------------------------------------
-
-### Setup
-
-`docker run -d --name adaptdb -v adaptdb:/data/db mongo`
-
-Adjust values such as `--email` and `--password` as desired:
-
-```bash
-docker run -it -p 5000:5000 --link adaptdb --name adaptauthoring -v adaptdata:/adapt_authoring garyritchie/docker-adaptauthoring bash -c 'node install --install Y --serverPort 5000 --serverName localhost --dbHost adaptdb --dbName adapt-tenant-master --dbPort 27017 --dataRoot data --sessionSecret your-session-secret --useffmpeg Y --smtpService dummy --smtpUsername smtpUser --smtpPassword smtpPass --fromAddress you@example.com --name master --displayName Master --email admin --password password'
-```
-
-After a while the container should quit and you should see the following message"
-
-```bash
-Done, without errors.
-
-The app.productname web application was compiled and is now ready to use.
-Installation complete.
-To restart your instance run the command 'pm2 restart all'
-Bye!
-```
-
-
-### Run
-
-Once the "Setup" steps are complete, do:
-
-`docker restart adaptauthoring`
-
-Adapt authoring tool should now be available at http://localhost:5000/
-
-
-### Upgrade
-
-*Please Note:* Upgrading has had mixed results in recent tests.
-
-Upgrade the AuthoringTool and or Framework (run in a shell):
-
-```bash
-docker exec -it adaptauthoring bash -c 'node upgrade --Y/n Y'
-```
-
-`node upgrade` has been stalling... `docker run -it -p 5000:5000 --link adaptdb --name adaptauthoring -v adaptdata:/adapt_authoring garyritchie/docker-adaptauthoring bash -c 'node upgrade --Y/n Y'`
-
-After a bit you should see:
-
-`Great work! Your Adapt authoring tool is now updated.`
+Simply set `SESSION_SECRET_FILE` / `ADMIN_PASSWORD_FILE`.
