@@ -2,6 +2,7 @@ version: '2'
 
 services:
   app:
+    container_name: adapt
     image: 3wordchant/adaptauthoring:0.10.4
     build: .
     volumes:
@@ -14,16 +15,7 @@ services:
       - "5000:5000"
     networks:
       - internal
-    environment:
-      - PORT=5000
-      - DOMAIN=adapt.localhost
-      - DB_HOST=db
-      - DB_NAME=adapt
-      - DB_USER=adapt
-      - SESSION_SECRET=foobar
-      - ADMIN_EMAIL=foo@bar.com
-      - ADMIN_PASSWORD=foo
-      - FROM_EMAIL=adapt@localhost
+    env_file: .env
 
   db:
     container_name: adaptdb

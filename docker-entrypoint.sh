@@ -28,7 +28,7 @@ load_vars() {
 }
 
 install_adapt() {
-	echo "No 'conf' dir found, installing Adapt"
+	echo "No 'conf' dir found, running 'node install...'"
 	# 3wc: use `yes` to skip the dbPass and dbAuthSource prompts
 	yes "" | node install --install Y \
    	--authoringToolRepository https://github.com/adaptlearning/adapt_authoring.git \
@@ -51,7 +51,7 @@ install_adapt() {
 }
 
 update_adapt() {
-	echo "Upgrade Adapt Authoring Tool & Framework"
+	echo "'conf' dir found, running 'node upgrade ...'"
 	node upgrade --continue Y --updateAutomatically Y
 }
 
