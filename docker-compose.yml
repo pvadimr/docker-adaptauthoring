@@ -1,28 +1,41 @@
 version: '2'
 
+services:
+  app:
+    image: 3wordchant/adaptauthoring:0.10.4
+    build: .
+    volumes:
+      - adaptdata:/adapt_authoring
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - internal
+    environment:
+      - PORT=5000
+      - DOMAIN=adapt.localhost
+      - DB_HOST=db
+      - DB_NAME=adapt
+      - DB_USER=adapt
+      - SESSION_SECRET=foobar
+      - ADMIN_EMAIL=foo@bar.com
+      - ADMIN_PASSWORD=foo
+      - FROM_EMAIL=adapt@localhost
+
+  db:
+    container_name: adaptdb
+    image: mongo:3.6
+    volumes:
+      - adaptdb:/data/db
+    networks:
+      - internal
+
 volumes:
   adaptdata:
   adaptdb:
 
-services:
-  db:
-    container_name: adaptdb
-    image: mongo
-    volumes:
-      - adaptdb:/data/db
-    # ports:
-    #   - 27017:27017
-  authoring:
-    container_name: adaptauthoring
-    image: pvadimr/adaptauthoring
-    image: ${REGISTRY:-pvadimr/adaptauthoring:${TAG:-latest}
-    volumes:
-      - adaptdata:/adapt_authoring
-    # build: .
-    command: pm2 start --no-daemon processes.json
-    links:
-      - db
-    # depends_on:
-    #   - db
-    ports:
-      - "5000:5000"
+networks:
+  internal:
