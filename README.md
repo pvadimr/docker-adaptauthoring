@@ -1,5 +1,7 @@
 # docker-adaptauthoring
 
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/3wordchant/adaptauthoring)
+
 Authoring SCORM-compatible training using the [Adapt Authoring](https://github.com/adaptlearning/adapt_authoring) tool.
 
 ## How to use this image
