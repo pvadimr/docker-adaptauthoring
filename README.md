@@ -2,9 +2,9 @@
 
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/3wordchant/adaptauthoring)
 
-Authoring SCORM-compatible training using the [Adapt Authoring tool](https://github.com/adaptlearning/adapt_authoring).
+Docker configuration for the [Adapt Authoring tool](https://github.com/adaptlearning/adapt_authoring): create SCORM-compatible training.
 
-## How to use this image
+## Getting started
 
 Because Adapt requires a database to run, the easiest way to get started is to use `docker-compose` to set up Adapt and MongoDB automatically.
 
@@ -16,7 +16,9 @@ Edit the variables under `services.app.environment`, then push the button!
 
     docker-compose up
 
-## Environment variables
+## Configuration
+
+### Environment variables
 
 You can configure Adapt's initial set-up using these variables:
 
@@ -33,7 +35,7 @@ You can configure Adapt's initial set-up using these variables:
 (If you edit these settings after set-up, you'll need to manually edit
 `/adapt_authoring/conf/config.json` with the new values as well)
 
-## Docker secrets
+### Docker secrets
 
 As well as environment variables, you can also load `SESSION_SECRET` and
 `ADMIN_PASSWORD` from files, which is helpful if you want to keep secret data in
@@ -41,7 +43,34 @@ As well as environment variables, you can also load `SESSION_SECRET` and
 
 Simply set `SESSION_SECRET_FILE` / `ADMIN_PASSWORD_FILE`.
 
-## Docker Swarm
+## Clean Up
+
+### To remove containers
+
+```
+docker-compose down
+```
+
+### To remove data (courses)
+
+This will delete your hard work.
+
+```
+docker volume rm dockeradaptauthoring_adaptdb
+docker volume rm dockeradaptauthoring_adaptdata
+```
+
+## Backup
+
+Create local archives of both the `adapt_authoring` folder and database:
+
+     docker run -it -w /backup -v dockeradaptauthoring_adaptdb:/adaptdb \
+       -v $(pwd)/backup:/backup dockeradaptauthoring_authoring \
+       bash -c "tar -czvf adaptdata_`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz /adapt_authoring && tar -czvf adaptdb_`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz /adaptdb"
+
+## Deployment
+
+### Docker Swarm
 
 See [`compose-stacks/adapt_authoring`] for an example Docker "swarm mode"
 configuration, including secrets, SSL reverse proxy, and continuous integration
@@ -50,8 +79,8 @@ tests of the stack deployment.
 ## Troubleshooting
 
  - If you run the installer script many times in quick succession, you might get
-	 rate-limited by Github (the script checks Github for the latest Adapt 
-	 Authoring version, and to clone the Authoring Framework and plug-ins). Wait
-	 an hour, or use a VPN.
+   rate-limited by Github (the script checks Github for the latest Adapt
+   Authoring version, and to clone the Authoring Framework and plug-ins). Wait
+   an hour, or use a VPN.
 
 [`compose-stacks/adapt_authoring`]: https://git.autonomic.zone/compose-stacks/adapt_authoring/
