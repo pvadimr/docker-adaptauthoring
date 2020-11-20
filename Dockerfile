@@ -1,6 +1,6 @@
 FROM node:12.18.4-stretch
 
-ENV AAT_VER=0.10.4
+ENV AAT_VER=0.10.5
 
 RUN apt-get update && apt-get install -y \
     build-essential \
