@@ -72,7 +72,7 @@ Create local archives of both the `adapt_authoring` folder and database:
 
 ### Docker Swarm
 
-See [`compose-stacks/adapt_authoring`] for an example Docker "swarm mode"
+See [`coop-cloud/adapt_authoring`] for an example Docker "swarm mode"
 configuration, including secrets, SSL reverse proxy, and continuous integration
 tests of the stack deployment.
 
@@ -82,5 +82,7 @@ tests of the stack deployment.
    rate-limited by Github (the script checks Github for the latest Adapt
    Authoring version, and to clone the Authoring Framework and plug-ins). Wait
    an hour, or use a VPN.
+ - `node upgrade` doesn't work, because code is downloaded as a ZIP archive
+    instead of using a `git clone`
 
-[`compose-stacks/adapt_authoring`]: https://git.autonomic.zone/compose-stacks/adapt_authoring/
+[`coop-cloud/adapt_authoring`]: https://git.autonomic.zone/coop-cloud/adapt_authoring/

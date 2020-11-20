@@ -50,11 +50,6 @@ install_adapt() {
 		#--smtpUsername "${SMTP_USERNAME}" --smtpPassword "${SMTP_PASSWORD}" \
 }
 
-update_adapt() {
-	echo "'conf' dir found, running 'node upgrade ...'"
-	node upgrade --continue Y --updateAutomatically Y
-}
-
 main() {
 	set -eu
 
@@ -62,8 +57,6 @@ main() {
 
 	if [ ! -d conf ]; then
 		install_adapt
-	else
-		update_adapt
 	fi
 }
 
